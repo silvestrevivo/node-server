@@ -4,12 +4,38 @@ var http = require('http'),
 
 //create server on a variable
 var server = http.createServer(function(request, response){
-  //write the heads as response of the server => for an HTML file
-  response.writeHead(200, {"Content-Type": "text/html"});
-  //create stream readable to take the HTML file
-  var html = fs.createReadStream(__dirname + '/index.html');
-  //write on the response the HTML file through a pipe
-  html.pipe(response);
+
+  var url = request.url; //variable for routing
+
+  if(url === '/' || url === '/home'){
+    //write headers for a HTML page
+    response.writeHead(200, {"Content-Type": "text/html"});
+    //routing pointing to home page
+    fs.createReadStream(__dirname + '/index.html').pipe(response);
+  } else if(url === '/contact') {
+    //write headers for a HTML page
+    response.writeHead(200, {"Content-Type": "text/html"});
+    //routing pointing to contact page
+    fs.createReadStream(__dirname + '/contact.html').pipe(response);
+  } else if( url === '/api'){
+      //define object
+      var personalData = {
+        name: 'Silvestre',
+        surname: "Vivo Millan",
+        age: 40,
+        city: 'Amsterdam'
+      };
+    //write headers for a JSON object
+    response.writeHead(200, {"Content-Type": "application/json"});
+    //routing pointing to JSON as string
+    response.end(JSON.stringify(personalData));
+  } else {
+    //write headers for a HTML page
+    response.writeHead(200, {"Content-Type": "text/html"});
+    //routing pointing to 404 page
+    fs.createReadStream(__dirname + '/404.html').pipe(response);
+  }
+  console.log(request.url);
 });
 
 //listen the server
