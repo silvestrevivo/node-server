@@ -1,42 +1,36 @@
-//Require modules for http en file-system
-var http = require('http'),
-    fs = require('fs');
+const http = require('http');
+const fs = require('fs');
 
-//create server on a variable
-var server = http.createServer(function(request, response){
+var dispatch = {
+    '/': function(request, response) {
+        response.writeHead(200, {"Content-Type": "text/html"});
+        fs.createReadStream(__dirname+'/views/index.html').pipe(response);
 
-  var url = request.url; //variable for routing
+        return undefined;
+    },
+    '/contact': function(request, response) {
+        response.writeHead(200, {"Content-Type": "text/html"});
+        fs.createReadStream(__dirname+'/views/contact.html').pipe(response);
 
-  if(url === '/' || url === '/home'){
-    //write headers for a HTML page
-    response.writeHead(200, {"Content-Type": "text/html"});
-    //routing pointing to home page
-    fs.createReadStream(__dirname + '/index.html').pipe(response);
-  } else if(url === '/contact') {
-    //write headers for a HTML page
-    response.writeHead(200, {"Content-Type": "text/html"});
-    //routing pointing to contact page
-    fs.createReadStream(__dirname + '/contact.html').pipe(response);
-  } else if( url === '/api'){
-      //define object
-      var personalData = {
-        name: 'Silvestre',
-        surname: "Vivo Millan",
-        age: 40,
-        city: 'Amsterdam'
-      };
-    //write headers for a JSON object
-    response.writeHead(200, {"Content-Type": "application/json"});
-    //routing pointing to JSON as string
-    response.end(JSON.stringify(personalData));
-  } else {
-    //write headers for a HTML page
-    response.writeHead(200, {"Content-Type": "text/html"});
-    //routing pointing to 404 page
-    fs.createReadStream(__dirname + '/404.html').pipe(response);
-  }
-  console.log(request.url);
-});
+        return undefined;
+    },
+    '/api': function(request, response) {
+        response.writeHead(200, {"Content-Type": "application/json"});
+        response.end(JSON.stringify({
+            date: new Date(),
+            user_agent: request.headers['user-agent']
+        }));
 
-//listen the server
-server.listen(3000, '127.0.0.1');
+        return undefined;
+    },
+    'undefined': function(request, response) {
+        response.writeHead(404, {"Content-Type": "text/html"});
+        fs.createReadStream(__dirname+'/errors/404.html').pipe(response);
+
+        return undefined;
+    }
+}
+
+http.createServer((request, response) => {
+    return dispatch[request.url](request, response);
+}).listen(8080);

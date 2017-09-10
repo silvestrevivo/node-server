@@ -1,0 +1,25 @@
+{
+  "name": "simple-http-server",
+  "version": "1.0.0",
+  "description": "A simple http server based in NodeJS",
+  "main": "app.js",
+  "dependencies": {
+    "http-server": "^0.10.0"
+  },
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diegocastrum/node-server.git"
+  },
+  "author": "@silvestre & @diegocastrum",
+  "bugs": {
+    "url": "https://github.com/diegocastrum/node-server/issues"
+  },
+  "homepage": "https://github.com/diegocastrum/node-server#readme"
+}
